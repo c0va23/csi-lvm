@@ -1,6 +1,9 @@
 GO111MODULE := on
 DOCKER_TAG := $(or ${GITHUB_TAG_NAME}, latest)
 
+PROVISIONER_IMAGE_NAME := "metalstack/csi-lvm-provisioner"
+CONTROLLER_IMAGE_NAME := "metalstack/csi-lvm-controller"
+
 all: provisioner controller
 
 .PHONY: provisioner
@@ -15,13 +18,13 @@ controller:
 
 .PHONY: dockerimages
 dockerimages:
-	docker build -t metalstack/csi-lvm-provisioner:${DOCKER_TAG} . -f cmd/provisioner/Dockerfile
-	docker build -t metalstack/csi-lvm-controller:${DOCKER_TAG} . -f cmd/controller/Dockerfile
+	docker build -t ${PROVISIONER_IMAGE_NAME}:${DOCKER_TAG} . -f cmd/provisioner/Dockerfile
+	docker build -t ${CONTROLLER_IMAGE_NAME}:${DOCKER_TAG} . -f cmd/controller/Dockerfile
 
 .PHONY: dockerpush
 dockerpush:
-	docker push metalstack/csi-lvm-controller:${DOCKER_TAG}
-	docker push metalstack/csi-lvm-provisioner:${DOCKER_TAG}
+	docker push ${PROVISIONER_IMAGE_NAME}:${DOCKER_TAG}
+	docker push ${CONTROLLER_IMAGE_NAME}:${DOCKER_TAG}
 
 .PHONY: clean
 clean:
@@ -34,8 +37,8 @@ tests:
 	@./deploy/start-minikube-on-linux.sh >/dev/null 2>/dev/null
 	@kubectl config view --flatten --minify > tests/files/.kubeconfig
 	@minikube docker-env > tests/files/.dockerenv
-	@sh -c '. ./tests/files/.dockerenv && docker build -t metalstack/csi-lvm-provisioner:${DOCKER_TAG} . -f cmd/provisioner/Dockerfile'
-	@sh -c '. ./tests/files/.dockerenv && docker build -t metalstack/csi-lvm-controller:${DOCKER_TAG} . -f cmd/controller/Dockerfile'
+	@sh -c '. ./tests/files/.dockerenv && docker build -t ${PROVISIONER_IMAGE_NAME}:${DOCKER_TAG} . -f cmd/provisioner/Dockerfile'
+	@sh -c '. ./tests/files/.dockerenv && docker build -t ${CONTROLLER_IMAGE_NAME}:${DOCKER_TAG} . -f cmd/controller/Dockerfile'
 	@sh -c '. ./tests/files/.dockerenv && docker build -t csi-lvm-tests:${DOCKER_TAG} --build-arg prtag=${DOCKER_TAG} --build-arg prpullpolicy="IfNotPresent" --build-arg prdevicepattern="loop[0-1]" tests' >/dev/null
 	@sh -c '. ./tests/files/.dockerenv && docker run --rm csi-lvm-tests:${DOCKER_TAG} bats /bats/start.bats /bats/revive.bats /bats/end.bats'
 	@rm tests/files/.dockerenv
