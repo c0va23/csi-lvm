@@ -11,8 +11,11 @@ jobs:
     - name: Branch name
       run: echo running on branch ${GITHUB_REF##*/}
     - name: Testing
+      env:
+        DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
       run: |
+        : ${DOCKER_HUB_USER:= metalstackci }
         export GITHUB_TAG_NAME=pr-${GITHUB_HEAD_REF##*/}
-        docker login -u metalstackci -p ${{ secrets.DOCKER_HUB_TOKEN }}
+        docker login -u ${DOCKER_HUB_USER} -p ${{ secrets.DOCKER_HUB_TOKEN }}
         echo "${{ secrets.KUBECONFIG }}" > tests/files/.kubeconfig
         make metalci

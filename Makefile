@@ -1,8 +1,10 @@
 GO111MODULE := on
 DOCKER_TAG := $(or ${GITHUB_TAG_NAME}, latest)
 
-PROVISIONER_IMAGE_NAME := "metalstack/csi-lvm-provisioner"
-CONTROLLER_IMAGE_NAME := "metalstack/csi-lvm-controller"
+DOCKER_HUB_USER ?= metalstackci
+
+PROVISIONER_IMAGE_NAME := "${DOCKER_HUB_USER}/csi-lvm-provisioner"
+CONTROLLER_IMAGE_NAME := "${DOCKER_HUB_USER}/csi-lvm-controller"
 
 all: provisioner controller
 

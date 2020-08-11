@@ -15,7 +15,10 @@ jobs:
     - uses: olegtarasov/get-tag@v1
       id: tagName
     - name: Build the Docker images
+      env:
+        DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
       run: |
-        docker login -u metalstackci -p ${{ secrets.DOCKER_HUB_TOKEN }}
+        : ${DOCKER_HUB_USER:= metalstackci }
+        docker login -u ${DOCKER_HUB_USER} -p ${{ secrets.DOCKER_HUB_TOKEN }}
         make dockerimages
         make dockerpush
