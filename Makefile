@@ -51,6 +51,8 @@ tests:
 metalci: dockerimages dockerpush
 	docker build -t csi-lvm-tests:${DOCKER_TAG} \
 		--build-arg prtag=${DOCKER_TAG} \
+		--build-arg provisioner_image_name=${PROVISIONER_IMAGE_NAME} \
+		--build-arg controller_image_name=${CONTROLLER_IMAGE_NAME} \
 		--build-arg prpullpolicy="Always" \
 		--build-arg prdevicepattern='nvme[0-9]n[0-9]' \
 		tests > /dev/null

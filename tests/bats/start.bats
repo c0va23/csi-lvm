@@ -1,7 +1,7 @@
 #!/usr/bin/env bats -p
 
 @test "prepare test files" {
-    run sed -i "s/PRTAG/${PRTAG}/g;s/PRPULLPOLICY/${PRPULLPOLICY}/g;s/PRDEVICEPATTERN/${PRDEVICEPATTERN}/g" /files/*
+    run sed -i "s/PRTAG/${PRTAG}/g;s/PRPULLPOLICY/${PRPULLPOLICY}/g;s/PRDEVICEPATTERN/${PRDEVICEPATTERN}/g;s/CONTROLLER_IMAGE_NAME/${CONTROLLER_IMAGE_NAME/\//\\\/}/g;s/PROVISIONER_IMAGE_NAME/${PROVISIONER_IMAGE_NAME/\//\\\/}/g" /files/*
     [ "$status" -eq 0 ]
 }
 

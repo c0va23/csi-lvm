@@ -9,6 +9,12 @@ ENV PRPULLPOLICY=$prpullpolicy
 ARG prdevicepattern
 ENV PRDEVICEPATTERN=$prdevicepattern
 
+ARG provisioner_image_name
+ENV PROVISIONER_IMAGE_NAME=$provisioner_image_name
+
+ARG controller_image_name
+ENV CONTROLLER_IMAGE_NAME=$controller_image_name
+
 ENV KUBECONFIG /files/.kubeconfig
 
 RUN apk add --update ca-certificates \
